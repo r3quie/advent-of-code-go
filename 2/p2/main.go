@@ -41,17 +41,25 @@ func remove(slice []int, s int) []int {
 	return append(slice[:s], slice[s+1:]...)
 }
 
-// PROBLEM: does not correctly determine insafeIndex when dec/asc causes unsafe; need to redo dec logic
 func safe(line []int) bool {
 	var dec bool
+	var decCount int
 	var unsafeIndexes []int
+
 	for i := 0; i < len(line)-1; i++ {
 		res := line[i] - line[i+1]
-		if i == 0 {
-			if res < 0 {
-				dec = true // dec is false by default
-			}
+		if res < 0 {
+			decCount++
+		} else if res > 0 {
+			decCount--
 		}
+	}
+	if decCount > 0 {
+		dec = true // dec is false by default
+	}
+
+	for i := 0; i < len(line)-1; i++ {
+		res := line[i] - line[i+1]
 		if res == 0 {
 			unsafeIndexes = append(unsafeIndexes, i)
 			continue
@@ -98,6 +106,8 @@ func main() {
 		if safe(line) {
 			safeNum++
 			continue
+		} else {
+			fmt.Println(line, "is not safe")
 		}
 
 	}
