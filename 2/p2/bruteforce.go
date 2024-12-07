@@ -1,6 +1,15 @@
+// I did not try optimizing this code; this is a brute force solution.
+
 package main
 
-/*
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strconv"
+	"strings"
+)
+
 func abs(x int) int {
 	if x < 0 {
 		return -x
@@ -36,50 +45,39 @@ func remove(slice []int, s int) []int {
 
 func safe(line []int) bool {
 	var dec bool
-	var decCount int
-	var unsafeIndexes []int
-
+	var flag bool
 	for i := 0; i < len(line)-1; i++ {
 		res := line[i] - line[i+1]
-		if res < 0 {
-			decCount++
-		} else if res > 0 {
-			decCount--
+		if i == 0 {
+			if res < 0 {
+				dec = true // dec is false by default
+			}
 		}
-	}
-	if decCount > 0 {
-		dec = true // dec is false by default
-	}
-
-	for i := 0; i < len(line)-1; i++ {
-		res := line[i] - line[i+1]
 		if res == 0 {
-			unsafeIndexes = append(unsafeIndexes, i)
-			continue
+			flag = true
+			break
 		}
 		if dec && res > 0 || !dec && res < 0 {
-			unsafeIndexes = append(unsafeIndexes, i)
-			continue
+			flag = true
+			break
 		}
 		if abs(res) > 3 {
-			unsafeIndexes = append(unsafeIndexes, i)
-			continue
+			flag = true
+			break
 		}
 	}
-	if len(unsafeIndexes) == 0 {
+	if !flag {
 		return true
 	}
-	for _, i := range unsafeIndexes {
+	for i := range line {
 		t := make([]int, len(line))
 		copy(t, line)
-		t = remove(t, i)
-		if simpleSafe(t) {
+		if simpleSafe(remove(t, i)) {
 			return true
 		}
 	}
 	return false
 }
-
 
 func main() {
 	file, err := os.Open("input.txt")
@@ -100,11 +98,7 @@ func main() {
 		if safe(line) {
 			safeNum++
 			continue
-		} else {
-			fmt.Println(line, "is not safe")
 		}
-
 	}
 	fmt.Println(safeNum)
 }
-*/
